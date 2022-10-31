@@ -3,27 +3,10 @@ const app = express();
 const router = require("./router/router");
 const chalk = require("chalk");
 const { handelError } = require("./utils/errorHandelr");
+
 app.use(express.json());
 app.use(express.static("./public"));
 
-// app.get("/", (req, res) => {
-//   // try {
-//   //   throw new Error("u ave error");
-//   // } catch (error) {
-//   //   return handelError(res, 404, error.message);
-//   // }
-//   const query = req.query;
-//   query.user = { sasa: "sas" };
-//   if (query.user) return res.send(query);
-//   return res.send("no query");
-// });
-
-// app.post("/", (req, res) => {
-//   res.status(201).send(req.body);
-// });
-// app.get("/", (req, res, next) => {
-//   res.send("in listner");
-// });
 app.use(router);
 
 app.use((err, req, res, next) => {
