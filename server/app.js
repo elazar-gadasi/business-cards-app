@@ -5,7 +5,8 @@ const chalk = require("chalk");
 const { handelError } = require("./utils/errorHandelr");
 app.use(express.json());
 app.use(express.static("./public"));
-
+const middellawer = require("./utils/middelwares/cors");
+app.use(router);
 // app.get("/", (req, res) => {
 //   // try {
 //   //   throw new Error("u ave error");
@@ -24,7 +25,6 @@ app.use(express.static("./public"));
 // app.get("/", (req, res, next) => {
 //   res.send("in listner");
 // });
-app.use(router);
 
 app.use((err, req, res, next) => {
   handelError(res, 500, err.message);

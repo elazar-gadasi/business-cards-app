@@ -1,58 +1,97 @@
 const express = require("express");
+const { handelError } = require("../../utils/errorHandelr");
 const app = express();
 const router = express.Router();
 const chalk = require("chalk");
+const {
+  getCards,
+  getMyCards,
+  createCard,
+  deleteCard,
+  updateCard,
+  likeCard,
+} = require("../models/service/cardService");
 
-// router.get("/", (req, res) => {
-//   console.log(chalk.yellow("end point"));
-//   res.send("end point");
-// });
-// app.use("/cards", router);
+router.get("/", async (req, res) => {
+  try {
+    const cards = await getCards();
+    res.send(cards);
+  } catch (error) {
+    const { status } = error;
+    handelError(res, status || 404, error.message);
+  }
+});
+router.get("/my-cards", async (req, res) => {
+  try {
+    const userId = "770770";
+    const card = await getMyCards(userId);
+    res.send(card);
+  } catch (error) {
+    const { status } = error;
 
-// router.get("/:id", (req, res) => {
-//   const { id } = req.params;
+    handelError(res, status || 500, error.message);
+  }
+});
 
-//   console.log(chalk.yellow(`end point ${id}`));
-//   res.send(`end point ${id}`);
-// });
-// app.use("/", router);
+router.get("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
 
-// router.post("/", (req, res) => {
-//   console.log(chalk.yellow("end point post"));
-//   res.send("end point post");
-// });
-// app.use("/", router);
+    const card = await getCards(id);
+    res.send(card);
+  } catch (error) {
+    const { status } = error;
 
-// router.put("/:id", (req, res) => {
-//   const { id } = req.params;
+    handelError(res, status || 500, error.message);
+  }
+});
 
-//   console.log(chalk.yellow(`end point ${id}`));
-//   res.send(`end point ${id}`);
-// });
-// app.use("/", router);
+router.post("/", async (req, res) => {
+  try {
+    const card = await createCard(req.body);
 
-// router.patch("/:id", (req, res) => {
-//   const id = req.params.id;
-//   console.log(chalk.yellow(`end point ${id}`));
-//   res.send(`end point ${id}`);
-// });
-// app.use(router);
+    res.send(card);
+  } catch (error) {
+    const { status } = error;
 
-// router.delete("/:id", (req, res) => {
-//   const card_id = req.params.id;
-//   console.log(chalk.yellow(`in delite ${card_id}`));
-//   res.send(`in delite ${card_id}`);
-// });
-// app.use(router);
+    handelError(res, status || 500, error.message);
+  }
+});
 
-router.get("/", (req, res) => {
-  console.log(chalk.yellow("end arry of users"));
-  return res.send([{}]);
+router.put("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const card = updateCard(id);
+
+    res.send(card);
+  } catch (error) {
+    const { status } = error;
+    handelError(res, status || 500, error.message);
+  }
+});
+
+router.patch("/:id", (req, res) => {
+  try {
+    const { id } = req.params;
+    const userId = "123456";
+    const card = likeCard(userId, id);
+    res.send(card);
+  } catch (error) {
+    const { status } = error;
+    handelError(res, status || 500, error.message);
+  }
+});
+
+router.delete("/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const card = await deleteCard(id);
+
+    res.send(card);
+  } catch (error) {
+    const { status } = error;
+    handelError(res, status || 500, error.message);
+  }
 });
 
 module.exports = router;
-
-// const PORT = 8989;
-// app.listen(PORT, () => {
-//   console.log(chalk.blue(`http://localhost:${PORT}`));
-// });
