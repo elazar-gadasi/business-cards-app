@@ -23,10 +23,10 @@ router.get("/", async (req, res) => {
   }
 });
 
-router.get("/:id", (req, res) => {
+router.get("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const user = getUser(id);
+    const user = await getUser(id);
 
     res.send(user);
   } catch (error) {

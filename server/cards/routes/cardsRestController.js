@@ -61,7 +61,7 @@ router.post("/", async (req, res) => {
 router.put("/:id", async (req, res) => {
   try {
     const { id } = req.params;
-    const card = updateCard(id);
+    const card = await updateCard(req.body, id);
 
     res.send(card);
   } catch (error) {
@@ -70,11 +70,11 @@ router.put("/:id", async (req, res) => {
   }
 });
 
-router.patch("/:id", (req, res) => {
+router.patch("/:id", async (req, res) => {
   try {
     const { id } = req.params;
     const userId = "123456";
-    const card = likeCard(userId, id);
+    const card = await likeCard(userId, id);
     res.send(card);
   } catch (error) {
     const { status } = error;
