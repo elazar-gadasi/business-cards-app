@@ -7,6 +7,7 @@ const {
   remove,
   like,
 } = require("../cardAccessDataService");
+const validateCard = require("../validation/cardValidationService");
 
 const getCards = async () => {
   try {
@@ -35,6 +36,11 @@ const getCard = async (id) => {
 };
 const createCard = async (rowCard) => {
   try {
+    const { error } = validateCard(rowCard);
+    console.log(error);
+    if (error) return Promise.reject(error.details[0].message);
+
+    console.log("success!!");
     let card = { ...rowCard };
     card.createdAt = new Date().toLocaleTimeString();
     card = await create(card);

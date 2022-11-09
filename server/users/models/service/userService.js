@@ -1,3 +1,5 @@
+const loginValidation = require("../../validation/joi/loginValidation");
+const registerValidation = require("../../validation/joi/registerValidation");
 const {
   find,
   findOne,
@@ -26,6 +28,10 @@ const getUser = async (id) => {
 };
 const registerUser = async (rowUser) => {
   try {
+    const { error } = registerValidation(rowUser);
+    console.log(error);
+    if (error) return Promise.reject(error.details[0].message);
+    console.log("success!!!");
     let user = { ...rowUser };
     user = await create(user);
     return Promise.resolve(user);
@@ -35,6 +41,9 @@ const registerUser = async (rowUser) => {
 };
 const loginUser = async (rowUser) => {
   try {
+    const { error } = loginValidation(rowUser);
+    if (error) return Promise.reject(error.details[0].message);
+    console.log("success!");
     let user = { ...rowUser };
     user = await login(user);
     return Promise.resolve(user);

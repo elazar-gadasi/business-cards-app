@@ -21,7 +21,7 @@ const morganLogger = morgan((token, req, res) => {
 
   return chalk.cyanBright(
     [
-      token.date(req, res),
+      currentDate,
       token.method(req, res),
       token.status(req, res),
       token.url(req, res),

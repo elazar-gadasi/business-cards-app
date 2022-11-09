@@ -39,7 +39,7 @@ const findOne = async (id) => {
 const create = async (card) => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve(`card no. ${card.id}`);
+      return Promise.resolve(card);
     } catch (error) {
       error.status = 404;
       return Promise.reject(error);

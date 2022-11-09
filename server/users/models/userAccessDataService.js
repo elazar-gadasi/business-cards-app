@@ -26,7 +26,7 @@ const findOne = async (id) => {
 const create = async (user) => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve(`user no. ${user.id}`);
+      return Promise.resolve(user);
     } catch (error) {
       error.status = 404;
       return Promise.reject(error);
@@ -38,7 +38,7 @@ const create = async (user) => {
 const login = async (user) => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve(`user no. ${user.id}`);
+      return Promise.resolve(user);
     } catch (error) {
       error.status = 404;
       return Promise.reject(error);
