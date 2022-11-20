@@ -5,6 +5,7 @@ const chalk = require("chalk");
 const { handelError } = require("./utils/errorHandelr");
 const cors = require("./middelwares/cors");
 const logger = require("./logger/loggerService");
+const connectToDb = require("./db/dbService");
 
 app.use(cors);
 app.use(logger);
@@ -17,4 +18,7 @@ app.use((err, req, res, next) => {
 });
 
 const PORT = 8181;
-app.listen(PORT, () => console.log(chalk.blue(`http://localhost:${PORT}`)));
+app.listen(PORT, () => {
+  console.log(chalk.blue(`http://localhost:${PORT}`));
+  connectToDb();
+});

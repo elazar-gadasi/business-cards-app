@@ -15,7 +15,7 @@ const {
 router.get("/", async (req, res) => {
   try {
     const cards = await getCards();
-    res.send(cards);
+    return res.send(cards);
   } catch (error) {
     const { status } = error;
     handelError(res, status || 404, error.message);
@@ -25,7 +25,7 @@ router.get("/my-cards", async (req, res) => {
   try {
     const userId = "770770";
     const card = await getMyCards(userId);
-    res.send(card);
+    return res.send(card);
   } catch (error) {
     const { status } = error;
 
@@ -38,7 +38,7 @@ router.get("/:id", async (req, res) => {
     const { id } = req.params;
 
     const card = await getCards(id);
-    res.send(card);
+    return res.send(card);
   } catch (error) {
     const { status } = error;
 
@@ -50,7 +50,7 @@ router.post("/", async (req, res) => {
   try {
     const card = await createCard(req.body);
 
-    res.send(card);
+    return res.status(201).send(card);
   } catch (error) {
     const { status } = error;
 
@@ -63,7 +63,7 @@ router.put("/:id", async (req, res) => {
     const { id } = req.params;
     const card = await updateCard(req.body, id);
 
-    res.send(card);
+    return res.send(card);
   } catch (error) {
     const { status } = error;
     handelError(res, status || 500, error.message);
@@ -75,7 +75,7 @@ router.patch("/:id", async (req, res) => {
     const { id } = req.params;
     const userId = "123456";
     const card = await likeCard(userId, id);
-    res.send(card);
+    return res.send(card);
   } catch (error) {
     const { status } = error;
     handelError(res, status || 500, error.message);
@@ -87,7 +87,7 @@ router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     const card = await deleteCard(id);
 
-    res.send(card);
+    return res.send(card);
   } catch (error) {
     const { status } = error;
     handelError(res, status || 500, error.message);

@@ -1,3 +1,6 @@
+const { default: mongoose } = require("mongoose");
+const Card = require("./mongodb/card");
+
 const DB = process.env.DB || "MONGODB";
 
 const find = async () => {
@@ -36,9 +39,12 @@ const findOne = async (id) => {
   return Promise.resolve("no mongo");
 };
 
-const create = async (card) => {
+const create = async (rowCard) => {
   if (DB === "MONGODB") {
     try {
+      const card = new Card(rowCard);
+      await card.save();
+
       return Promise.resolve(card);
     } catch (error) {
       error.status = 404;

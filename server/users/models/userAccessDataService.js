@@ -1,3 +1,5 @@
+let User = require("./mongodb/User");
+
 const DB = process.env.DB || "MONGODB";
 
 const find = async () => {
@@ -23,9 +25,13 @@ const findOne = async (id) => {
   }
   return Promise.resolve("no mongo");
 };
-const create = async (user) => {
+const registerUser1 = async (rowUser) => {
   if (DB === "MONGODB") {
     try {
+      console.log(1);
+      let user = new User(rowUser);
+      console.log(2);
+      await user.save();
       return Promise.resolve(user);
     } catch (error) {
       error.status = 404;
@@ -83,7 +89,7 @@ const changeIsBizStatuse = async (id) => {
 
 exports.find = find;
 exports.findOne = findOne;
-exports.create = create;
+exports.registerUser1 = registerUser1;
 exports.login = login;
 exports.remove = remove;
 exports.update = update;

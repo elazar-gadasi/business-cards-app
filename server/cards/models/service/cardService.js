@@ -7,7 +7,9 @@ const {
   remove,
   like,
 } = require("../cardAccessDataService");
-const validateCard = require("../validation/cardValidationService");
+const validateCard = require("../../validation/cardValidationService");
+const { handleJoiError } = require("../../../utils/errorHandelr");
+const normalizeCard = require("../../helpers/normalizeCard");
 
 const getCards = async () => {
   try {
@@ -37,13 +39,14 @@ const getCard = async (id) => {
 const createCard = async (rowCard) => {
   try {
     const { error } = validateCard(rowCard);
-    console.log(error);
-    if (error) return Promise.reject(error.details[0].message);
 
-    console.log("success!!");
-    let card = { ...rowCard };
-    card.createdAt = new Date().toLocaleTimeString();
-    card = await create(card);
+    if (error) return handleJoiError(error);
+
+    rowCard.createdAt = new Date();
+    let card = normalizeCard(rowCard);
+
+    card = create(rowCard);
+
     return Promise.resolve(card);
   } catch (error) {
     Promise.reject(error);

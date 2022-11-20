@@ -1,6 +1,6 @@
 const express = require("express");
 const router = express.Router();
-
+const { registerUser1 } = require("../models/userAccessDataService");
 const {
   registerUser,
   loginUser,
@@ -11,11 +11,15 @@ const {
   deleteUser,
 } = require("../models/service/userService");
 const { handelError } = require("../../utils/errorHandelr");
+const normalizeUser = require("../helpers/NormalizeUser");
+const {
+  validateRegisteration,
+} = require("../validation/userValidationService");
 
 router.get("/", async (req, res) => {
   try {
     const users = await getUsers();
-    res.send(users);
+    return res.send(users);
   } catch (error) {
     const { status } = error;
 
@@ -28,7 +32,7 @@ router.get("/:id", async (req, res) => {
     const { id } = req.params;
     const user = await getUser(id);
 
-    res.send(user);
+    return res.send(user);
   } catch (error) {
     const { status } = error;
 
@@ -38,9 +42,16 @@ router.get("/:id", async (req, res) => {
 
 router.post("/", async (req, res) => {
   try {
-    const user = await registerUser(req.body);
+    let user = req.body;
+    const { error } = validateRegisteration(user);
+    if (error)
+      return handelError(error, 400, `Joi Error: ${error.details[0].message}`);
+    user = await normalizeUser(user);
+    console.log(user);
+    user = await registerUser1(user);
+    console.log(user);
 
-    res.status(201).send(user);
+    return res.status(201).send(user);
   } catch (error) {
     const { status } = error;
 
@@ -51,7 +62,7 @@ router.post("/", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const user = await loginUser(req.body);
-    res.send(user);
+    return res.send(user);
   } catch (error) {
     const { status } = error;
 
@@ -64,7 +75,7 @@ router.put("/:id", async (req, res) => {
     const { id } = req.params;
     const user = await updateUser(req.body, id);
 
-    res.send(user);
+    return res.send(user);
   } catch (error) {
     const { status } = error;
 
@@ -77,7 +88,7 @@ router.patch("/:id", async (req, res) => {
     const { id } = req.params;
     const user = await changeUserBusinessStatuse(id);
 
-    res.send(user);
+    return res.send(user);
   } catch (error) {
     const { status } = error;
 
@@ -90,7 +101,7 @@ router.delete("/:id", async (req, res) => {
     const { id } = req.params;
     const user = await deleteUser(id);
 
-    res.send(user);
+    return res.send(user);
   } catch (error) {
     const { status } = error;
 

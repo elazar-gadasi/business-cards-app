@@ -1,4 +1,6 @@
 const joi = require("joi");
+const urlRegex =
+  /(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})/;
 
 const validateCard = (card) => {
   console.log(22);
@@ -18,14 +20,14 @@ const validateCard = (card) => {
       .required(),
     web: joi
       .string()
-      .ruleset.regex(/https:.+/)
+      .ruleset.regex(urlRegex)
       .rule({ message: "key nust be standard web string" })
       .required(),
     image: joi.object().keys({
       url: joi
         .string()
         .allow("")
-        .ruleset.regex(/https:.+/)
+        .ruleset.regex(urlRegex)
         .rule({ message: "key nust be standard url string" })
         .required(),
       alt: joi.string().allow("").required(),
@@ -38,7 +40,7 @@ const validateCard = (card) => {
       houseNumber: joi.number().min(1).required(),
       zip: joi.number().min(4).required(),
     }),
-    bizNumber: joi.number().allow("").required(),
+    bizNumber: joi.number().allow(""),
     user_id: joi.string().allow(""),
   });
   return schema.validate(card);
