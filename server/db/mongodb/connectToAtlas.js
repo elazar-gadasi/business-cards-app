@@ -1,9 +1,13 @@
 const mongoose = require("mongoose");
 const chalck = require("chalk");
+const config = require("config");
+
+const userName = config.get("DB_NAME");
+const userPassword = config.get("DB_PASSWORD");
 
 mongoose
   .connect(
-    "mongodb+srv://elazargadasi:elazarg770@cluster0.07ddhhg.mongodb.net/test"
+    `mongodb+srv://${userName}:${userPassword}@cluster0.07ddhhg.mongodb.net/test`
   )
   .then(() => console.log(chalck.magentaBright("connect succes mongodb atlas")))
   .catch((error) =>

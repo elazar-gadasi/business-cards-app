@@ -1,0 +1,9 @@
+{
+  "NODE_ENV": "protuction",
+  "PORT": 9191,
+  "TOKEN_GENERATOR": "jwt",
+  "DB_NAME": "elazargadasi",
+  "DB_PASSWORD": 311246037,
+  "LOGGER": "morgan",
+  "DB": "MONGODB"
+}

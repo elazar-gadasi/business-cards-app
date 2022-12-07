@@ -30,7 +30,7 @@ const cardSchema = new mongoose.Schema({
     type: Number,
     minLength: 7,
     maxLength: 7,
-    required: true,
+    // required: true,
     trim: true,
   },
   likes: [String],

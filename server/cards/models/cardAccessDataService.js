@@ -1,48 +1,60 @@
 const { default: mongoose } = require("mongoose");
+const { handleBadRequest } = require("../../utils/errorHandelr");
 const Card = require("./mongodb/card");
+const config = require("config");
 
-const DB = process.env.DB || "MONGODB";
+const DB = config.get("DB") || "MONGODB";
 
-const find = async () => {
+const getCards = async () => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve([{ card: "one" }]);
+      const cards = await Card.find();
+
+      return Promise.resolve(cards);
     } catch (error) {
       error.status = 404;
-      return Promise.reject(error);
+      handleBadRequest("Mongoos", error);
     }
   }
-  return Promise.resolve("no MONGODB");
+  return Promise.resolve([]);
 };
 
-const findMyCards = async (userId) => {
+const getMyCards = async (userId) => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve(`my cards${userId}`);
+      const card = await Card.find({ user_id: userId });
+      if (!card.length)
+        throw new Error("could not find any card in the database");
+
+      return Promise.resolve(card);
     } catch (error) {
       error.status = 404;
-      return Promise.reject(error);
+      handleBadRequest("Mongoos", error);
     }
   }
-  return Promise.resolve("no mongo");
+  return Promise.resolve([]);
 };
 
-const findOne = async (id) => {
+const getCard = async (cardId) => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve(`card no.${id}`);
+      const card = await Card.findById(cardId);
+      if (!card) throw new Error("could not find this card in the database");
+
+      return Promise.resolve(card);
     } catch (error) {
       error.status = 404;
-      return Promise.reject(error);
+      handleBadRequest("Mongoos", error);
     }
   }
-  return Promise.resolve("no mongo");
+  return Promise.resolve([]);
 };
 
-const create = async (rowCard) => {
+const createCard = async (rowCard) => {
   if (DB === "MONGODB") {
     try {
       const card = new Card(rowCard);
+
       await card.save();
 
       return Promise.resolve(card);
@@ -53,44 +65,73 @@ const create = async (rowCard) => {
   }
   return Promise.resolve("no mongo");
 };
-const remove = async (id) => {
+const deleteCard = async (cardId) => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve(`card no. ${id} deleted`);
+      const card = await Card.findOneAndDelete(cardId);
+      if (!card) throw new Error("could not delete this card in the database");
+
+      return Promise.resolve(card);
     } catch (error) {
       error.status = 404;
-      return Promise.reject(error);
+      handleBadRequest("Mongoos", error);
     }
   }
-  return Promise.resolve("no mongo");
+  return Promise.resolve("cardnot delete in database");
 };
-const update = async (card, id) => {
+const updateCard = async (normalizeCard, id) => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve(`card no. ${id} updated`);
+      const card = Card.findByIdAndUpdate(id, normalizeCard, {
+        new: true,
+      });
+
+      if (!card) throw new Error("could not update this card in the database");
+
+      return Promise.resolve(card);
     } catch (error) {
       error.status = 404;
-      return Promise.reject(error);
+      handleBadRequest("Mongoos", error);
     }
   }
-  return Promise.resolve("no mongo");
+  return Promise.resolve("card delete not in mongodb");
 };
-const like = async (idOfUser, idOfCard) => {
+const likeCard = async (idOfUser, idOfCard) => {
   if (DB === "MONGODB") {
     try {
-      return Promise.resolve(`card no. ${idOfCard} liked`);
+      let card = await Card.findById(idOfCard);
+
+      if (!card)
+        throw new Error(
+          "could not changecard likes whit this id in the database"
+        );
+
+      const findCard = card.likes.find((_id) => _id === idOfUser);
+
+      if (!findCard) {
+        card.likes.push(idOfUser);
+        card = await card.save();
+        return Promise.resolve(card);
+      }
+
+      let filterUser = card.likes.filter((_id) => _id !== idOfUser);
+
+      card.likes = filterUser;
+      card = card.save();
+
+      return Promise.resolve(card);
     } catch (error) {
       error.status = 404;
       return Promise.reject(error);
     }
   }
-  return Promise.resolve("no mongo");
+  return Promise.resolve("Card Updated!");
 };
 
-exports.find = find;
-exports.remove = remove;
-exports.like = like;
-exports.update = update;
-exports.create = create;
-exports.findOne = findOne;
-exports.findMyCards = findMyCards;
+exports.getCards = getCards;
+exports.deleteCard = deleteCard;
+exports.likeCard = likeCard;
+exports.updateCard = updateCard;
+exports.createCard = createCard;
+exports.getCard = getCard;
+exports.getMyCards = getMyCards;

@@ -10,6 +10,7 @@ const registerValidation = (user) => {
       last: joi.string().min(2).max(256).required(),
     }),
     isBusiness: joi.boolean().required(),
+    isAdmin: joi.boolean(),
 
     phone: joi
       .string()
@@ -33,9 +34,8 @@ const registerValidation = (user) => {
         .string()
         .allow("")
         .ruleset.regex(urlRegex)
-        .rule({ message: "key nust be standard url string" })
-        .required(),
-      alt: joi.string().allow("").required(),
+        .rule({ message: "key nust be standard url string" }),
+      alt: joi.string().allow(""),
     }),
     address: joi.object().keys({
       state: joi.string().min(2).max(256).allow(""),
@@ -43,7 +43,7 @@ const registerValidation = (user) => {
       city: joi.string().min(2).max(256).required(),
       street: joi.string().min(2).max(256).required(),
       houseNumber: joi.number().min(1).required(),
-      zip: joi.number().min(4).required(),
+      zip: joi.number().min(4),
     }),
   });
   return schema.validate(user);

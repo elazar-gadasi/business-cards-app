@@ -1,4 +1,4 @@
-const normalizeUser = async (rawCard, userId) => {
+const normalizeUser = async (rawCard) => {
   const { url, alt } = rawCard.image;
   const image = {
     url:
