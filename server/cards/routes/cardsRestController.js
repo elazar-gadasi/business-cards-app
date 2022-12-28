@@ -31,9 +31,8 @@ router.get("/", async (req, res) => {
 
 router.get("/my-cards", auth, async (req, res) => {
   try {
-    console.log(req.user.isBusiness);
     const { _id, isBusiness } = req.user;
-    console.log(isBusiness);
+
     if (!isBusiness)
       return handelError(
         res,
